@@ -45,6 +45,7 @@ dataframe2[which(dataframe2$publishedAt<"2023-01-01"),] %>%
         axis.text.y = element_text(size=12, face="bold"),
         axis.title.y = element_text(size = 18, face="bold"),
         legend.text = element_text(size = 12),
-        legend.title = element_text(size = 14)) +
+        legend.title = element_text(size = 14),
+        title = element_text(size = 16, hjust = 0.5, face="bold")) +
   # Ajoût du nom des axes et des titres de la légende
-  labs(x = "Date de publication", y = "Part du volume de vues total")
+  labs(x = "Date de publication", y = "Part du volume de vues total", title = "Évolution de la part du volume total de vues de chaque catégorie")
