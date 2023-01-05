@@ -18,7 +18,12 @@ library(tidyverse)
 dataframe = FR_youtube_trending_data[(FR_youtube_trending_data$dislikes > 0) & (FR_youtube_trending_data$comment_count > 0),] %>% group_by(video_id) %>% arrange(-view_count)
 dataframe2 = subset(dataframe,!duplicated(dataframe$video_id))
 
-theme_set(theme_minimal())
+theme_set(theme(axis.text.x = element_text(angle = 40, vjust = 1, hjust=1, size=12, face="bold"),
+                axis.title.x = element_text(size = 18, face="bold"),
+                axis.text.y = element_text(size=12, face="bold"),
+                axis.title.y = element_text(size = 18, face="bold"),
+                legend.text = element_text(size = 12),
+                legend.title = element_text(size = 14)))
 
 p <- ggplot(dataframe2, aes(dislikes, likes, size = view_count))
 
@@ -34,7 +39,12 @@ p <- p + scale_y_continuous(trans='log10')
 
 # Pas rouge / bleu pour ne pas confondre avec dislike / like
 p <- p + scale_color_gradient(low = "black", high="lightgreen") 
+
+p <- p + labs(size = str_wrap("Nombre de vues", width = 15), color = str_wrap("Nombre de commentaires (Log)", width = 15), x = "Likes", y = "Dislikes")
+
 p
 
+
+  
 
 
