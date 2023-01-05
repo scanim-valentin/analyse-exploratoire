@@ -8,7 +8,7 @@ library(tidyverse)
 # Elimination des vidéos sans dislikes grâce au ">0" permet d'avoir les valeurs avant la suppression de l'affichage des dislikes (remplacer par "==0" pour avoir les valeurs suivantes)
 # Elimination des vidéos sans commentaire
 # Elimination des vidéos sans ratings
-dataframe = FR_youtube_trending_data[which(FR_youtube_trending_data$dislikes>0 & FR_youtube_trending_data$ratings_disabled == "False" & FR_youtube_trending_data$comments_disabled == "False"),] %>% # [FR_youtube_trending_data$dislikes > 0,]
+dataframe = FR_youtube_trending_data[which(FR_youtube_trending_data$dislikes<0 & FR_youtube_trending_data$ratings_disabled == "False" & FR_youtube_trending_data$comments_disabled == "False"),] %>% # [FR_youtube_trending_data$dislikes > 0,]
   group_by(video_id) %>%
   arrange(-view_count) 
 
@@ -51,6 +51,7 @@ subset(dataframe,!duplicated(dataframe$video_id)) %>%
         axis.text.y = element_text(size=12, face="bold"),
         axis.title.y = element_text(size = 18, face="bold"),
         legend.text = element_text(size = 12),
-        legend.title = element_text(size = 14)) +
+        legend.title = element_text(size = 14),
+        title = element_text(size = 16, hjust = 0.5, face="bold")) +
   # Ajoût du nom des axes et des titres de la légende
-  labs(size = str_wrap("Nombre moyen de likes", width = 15), color = str_wrap("Nombre moyen de commentaires", width = 15), x = "Catégories", y = "Vues Moyennes")
+  labs(size = str_wrap("Nombre moyen de likes", width = 15), color = str_wrap("Nombre moyen de commentaires", width = 15), x = "Catégories", y = "Vues Moyennes", title = "Popularité moyenne de chaque catégories avant la fin des dislikes")
