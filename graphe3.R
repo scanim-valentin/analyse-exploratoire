@@ -8,14 +8,10 @@ dataframe2 = subset(dataframe1,!duplicated(dataframe1$video_id)) %>%
   select(categoryId, view_count, publishedAt, video_id) %>%
   mutate(publishedAt = as.Date(publishedAt))
 
-dataframe2 = dataframe2[which(dataframe2$publishedAt<"2023-01-01"),] %>%
-  mutate(quarter = as.Date(cut(publishedAt, "quarter")))
-
-dataframe3 <- dataframe2 %>%
+dataframe2[which(dataframe2$publishedAt<"2023-01-01"),] %>%
+  mutate(quarter = as.Date(cut(publishedAt, "quarter"))) %>%
   group_by(quarter, categoryId) %>%
-  summarise(mean_view_count = mean(view_count))
-
-dataframe4 = dataframe3 %>%
+  summarise(sum_view_count = sum(view_count)) %>%
   mutate(categoryId = as.factor(categoryId)) %>%
   mutate(categoryId = fct_recode(categoryId,
                                  "Film & Animation" = "1",
@@ -33,16 +29,15 @@ dataframe4 = dataframe3 %>%
                                  "Education" = "27",
                                  "Science & Technology" = "28",
                                  "Nonprofits & Activism" = "29"
-  ))
-
-ggplot(dataframe4, aes(x = quarter, y = mean_view_count, color = categoryId)) +
-  geom_line(size = 1.5) +
-  scale_x_date(date_breaks = "3 month", date_labels = "%b-%Y") +
-  theme(axis.text.x = element_text(angle = 40, vjust = 1, hjust=1, size=12, face="bold"),
-        axis.title.x = element_text(size = 18, face="bold"),
-        axis.text.y = element_text(size=12, face="bold"),
-        axis.title.y = element_text(size = 18, face="bold"),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 14),
-        legend.position = "none") +
-  labs(x = "Date de publication", y = "Vues moyennes par jour")
+  )) %>%
+  ggplot(aes(x = quarter, y = sum_view_count, fill = categoryId)) +
+    geom_area(position = "fill", color = "black") +
+    scale_y_continuous(labels = scales::percent) +
+    scale_x_date(date_breaks = "3 month", date_labels = "%b-%Y") +
+    theme(axis.text.x = element_text(angle = 40, vjust = 1, hjust=1, size=12, face="bold"),
+          axis.title.x = element_text(size = 18, face="bold"),
+          axis.text.y = element_text(size=12, face="bold"),
+          axis.title.y = element_text(size = 18, face="bold"),
+          legend.text = element_text(size = 12),
+          legend.title = element_text(size = 14)) +
+    labs(x = "Date de publication", y = "Part du volume de vues total")
